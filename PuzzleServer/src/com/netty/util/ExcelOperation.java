@@ -19,6 +19,7 @@ import com.netty.core.HttpServer;
 
 public class ExcelOperation {
 
+	@SuppressWarnings("deprecation")
 	public static ArrayList<ArrayList<Map<String, String>>> readExcelWithTitle(String filepath) throws Exception {
 		String fileType = filepath.substring(filepath.lastIndexOf(".") + 1, filepath.length());
 		InputStream is = null;
@@ -42,6 +43,7 @@ public class ExcelOperation {
 				for (int j = 0; j < rowSize; j++) {// 遍历行
 					Row row = sheet.getRow(j);
 					if (row == null) {// 略过空行
+						System.out.println("taog");
 						continue;
 					}
 					int cellSize = row.getLastCellNum();// 行中有多少个单元格，也就是有多少列
@@ -57,7 +59,8 @@ public class ExcelOperation {
 							String key = titles.get(k);
 							String value = null;
 							if (cell != null) {
-								value = cell.toString();
+								cell.setCellType (Cell.CELL_TYPE_STRING);
+								value = String.valueOf(cell);
 							}
 							rowMap.put(key, value);
 						}

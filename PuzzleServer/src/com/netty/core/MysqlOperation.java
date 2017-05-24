@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.omg.PortableInterceptor.ORBInitInfoPackage.InvalidName;
 
+import com.netty.controllers.AnswerController.PapersScoreResp;
 import com.netty.controllers.UserInfo;
 //import com.netty.controllers.UserInfo;
 import com.netty.util.DbcpPool;
@@ -94,6 +95,25 @@ public class MysqlOperation {
 		}
 		return info;
    }
+   public PapersScoreResp QueryScorelist(String name1,String name2) {
+	PapersScoreResp info=new PapersScoreResp();
+	   try {
+  			conn=DbcpPool.getConn();
+  			Statement stmt=conn.createStatement();
+  			rs=null;
+  			String sql = "select * from userdata where "+name1+" = "+"'"+name2+"'";  
+  			rs = stmt.executeQuery(sql);
+  			while(rs.next()){
+  				for(int i=8;i<11;i++){  					
+  					info.scoreList.add(rs.getInt(i));
+  				}
+  			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	return info;
+   }
    public  void UpdateOther(String data0,String data1,String data2){
        try {
     	   String sql = "update userdata set "+data0+"="+data1+" where acount=?";
@@ -108,7 +128,21 @@ public class MysqlOperation {
 		e.printStackTrace();
 	}
    }
-   
+   public void UpdateInt(String data0,int data1,String data2 ) {
+       try {
+    	   String sql = "update userdata set "+data0+" = ? where acount=?";
+    	   conn=DbcpPool.getConn();
+           PreparedStatement pst = conn.prepareStatement(sql);
+           //pst.setString(1, data0);
+           pst.setInt(1, data1);
+           pst.setString(2, data2);
+	       pst.executeUpdate();
+
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+   }
    public  void UpdateData(String data0,java.sql.Date data1,String data2){
        try {
     	   String sql = "update userdata set "+data0+"= ?where acount=?";

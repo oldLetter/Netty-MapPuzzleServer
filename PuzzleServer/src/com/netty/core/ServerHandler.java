@@ -1,30 +1,22 @@
 package com.netty.core;
-import java.util.Arrays;
-import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;  
 import org.apache.commons.logging.LogFactory;
+import org.apache.xmlbeans.impl.xb.xsdschema.NarrowMaxMin;
 
-import com.netty.controllers.GameController;
-import com.netty.controllers.UserController;
-import com.netty.controllers.GameController.HintReq;
-import com.netty.controllers.GameController.LevelUpReq;
-import com.netty.controllers.UserController.*;
-import com.netty.proto.RespDataID;
 import com.netty.util.CoderUtil;
-import com.netty.util.ProtoStuffSerializerUtil;
-import java.lang.reflect.InvocationTargetException;  
 import java.lang.reflect.Method;
+import java.util.HashMap;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;  
 import io.netty.channel.ChannelInboundHandlerAdapter;  
 
 
 public class ServerHandler extends ChannelInboundHandlerAdapter{  
      private static Log log = LogFactory.getLog(ServerHandler.class);  
+     public static HashMap<String, String> usermap =new HashMap<>();
      int count=0;
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -36,6 +28,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter{
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     	// TODO Auto-generated method stub
     	super.channelInactive(ctx);
+    	usermap.remove(ctx.channel().id().toString());
         System.out.println(ctx.channel().id()+" Out");  
     }
     
@@ -52,7 +45,6 @@ public class ServerHandler extends ChannelInboundHandlerAdapter{
 		System.arraycopy(temp, 4+urllenth, data, 0, data.length);
 		System.arraycopy(temp, 4, urlbyt, 0, urlbyt.length);
         String body = new String(urlbyt,"UTF-8"); 
-        log.info(body);
         callControlMethod(body, data,ctx);
 	}  
 	public void callControlMethod(String methodname,byte[] req,ChannelHandlerContext ctx)
