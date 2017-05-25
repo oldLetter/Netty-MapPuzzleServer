@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.util.ZipSecureFile.ThresholdInputStream;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -18,14 +19,19 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.netty.core.HttpServer;
 
 public class ExcelOperation {
-
+	public static ExcelOperation instance=new ExcelOperation();
+	private  ExcelOperation() {
+	}
+	
 	@SuppressWarnings("deprecation")
-	public static ArrayList<ArrayList<Map<String, String>>> readExcelWithTitle(String filepath) throws Exception {
+	public  ArrayList<ArrayList<Map<String, String>>> readExcelWithTitle(String filepath) throws Exception {
 		String fileType = filepath.substring(filepath.lastIndexOf(".") + 1, filepath.length());
+		
 		InputStream is = null;
 		Workbook wb = null;
 		try {
-			is = new FileInputStream(filepath);
+			//is = new FileInputStream(filepath);
+			is=this.getClass().getResourceAsStream(filepath);
 			if (fileType.equals("xls")) {
 				wb = new HSSFWorkbook(is);
 			} else if (fileType.equals("xlsx")) {

@@ -14,7 +14,6 @@ import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 import com.netty.core.ServerHandler;
-import com.netty.proto.RespDataID;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

@@ -7,7 +7,6 @@ import com.dyuproject.protostuff.Tag;
 import com.netty.controllers.UserController.LoginReq;
 import com.netty.core.MysqlOperation;
 import com.netty.core.ServerHandler;
-import com.netty.proto.RespDataID;
 import com.netty.util.ProtoStuffSerializerUtil;
 
 import io.netty.buffer.ByteBuf;

@@ -105,7 +105,7 @@ public class AnswerController {
 	public void GetPaperList(byte[] byt,ChannelHandlerContext ctx){
 		ArrayList<ArrayList<Map<String, String>>> result;
 		try {
-			result = ExcelOperation.readExcelWithTitle("src/doc/PaperList.xlsx");
+			result = ExcelOperation.instance.readExcelWithTitle("/doc/PaperList.xlsx");
 			PaperListResp resp=new PaperListResp();
 			for(int i=0;i<result.size();i++){
 				ArrayList<Map<String, String>> sheet=result.get(i);
@@ -129,10 +129,10 @@ public class AnswerController {
 	}
 	public void GetQuestionList(byte[] byt,ChannelHandlerContext ctx) {
 		QuestionListReq req=ProtoStuffSerializerUtil.deserialize(byt, QuestionListReq.class);
-		String excelpath="src/doc/"+req.paperName+".xlsx";
+		String excelpath="/doc/"+req.paperName+".xlsx";
 		ArrayList<ArrayList<Map<String, String>>> result;
 		try {
-			result = ExcelOperation.readExcelWithTitle(excelpath);
+			result = ExcelOperation.instance.readExcelWithTitle(excelpath);
 			QuestionListResp resp=new QuestionListResp();
 			for(int i=0;i<result.size();i++){
 				ArrayList<Map<String, String>> sheet=result.get(i);
@@ -149,8 +149,7 @@ public class AnswerController {
 					resp.list.add(info);
 				}
 			}
-			resp.maxscore=MysqlOperation.getInstance().QueryInt("netpaper"+req.id, "acount",  ServerHandler.usermap.get(ctx.channel().id().toString()));
-			log.info(resp.maxscore);
+			resp.maxscore=MysqlOperation.getInstance().QueryInt("netpaper"+req.id, "acount",  ServerHandler.usermap.get(ctx.channel().id()).toString());
 			ByteBuf buf=ProtoStuffSerializerUtil.serialize(resp);
 			ctx.write(buf);
 			ctx.flush();
@@ -163,9 +162,9 @@ public class AnswerController {
 		PaperScoreReq req=ProtoStuffSerializerUtil.deserialize(byt, PaperScoreReq.class);
 		PaperScoreResp resp=new PaperScoreResp();
 		if(req.type){
-			MysqlOperation.getInstance().UpdateInt("locpaper"+req.id, req.score, ServerHandler.usermap.get(ctx.channel().id().toString()));			
+			MysqlOperation.getInstance().UpdateInt("locpaper"+req.id, req.score, ServerHandler.usermap.get(ctx.channel().id()).toString());			
 		}else {
-			MysqlOperation.getInstance().UpdateInt("netpaper"+req.id, req.score, ServerHandler.usermap.get(ctx.channel().id().toString()));			
+			MysqlOperation.getInstance().UpdateInt("netpaper"+req.id, req.score, ServerHandler.usermap.get(ctx.channel().id()).toString());			
 		}
 		resp.score=req.score;
 		ByteBuf buf=ProtoStuffSerializerUtil.serialize(resp);

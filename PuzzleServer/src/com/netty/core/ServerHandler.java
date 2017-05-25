@@ -1,34 +1,45 @@
 package com.netty.core;
 
+import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.TreeBidiMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;  
 import org.apache.commons.logging.LogFactory;
-import org.apache.xmlbeans.impl.xb.xsdschema.NarrowMaxMin;
 
+import com.netty.controllers.MessagePush;
 import com.netty.util.CoderUtil;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;  
-import io.netty.channel.ChannelInboundHandlerAdapter;  
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelId;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.util.concurrent.GlobalEventExecutor;  
 
 
 public class ServerHandler extends ChannelInboundHandlerAdapter{  
      private static Log log = LogFactory.getLog(ServerHandler.class);  
-     public static HashMap<String, String> usermap =new HashMap<>();
-     int count=0;
+     //public static HashMap<String, String> usermap =new HashMap<>();
+     public static BidiMap usermap = new TreeBidiMap();
+     public static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+     
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
     	// TODO Auto-generated method stub
     	super.channelActive(ctx);
+    	channelGroup.add(ctx.channel());
+//		new MessagePush().start();
         System.out.println(ctx.channel().id()+" In");  
     }
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     	// TODO Auto-generated method stub
     	super.channelInactive(ctx);
-    	usermap.remove(ctx.channel().id().toString());
+    	channelGroup.remove(ctx.channel());
+    	usermap.remove(ctx.channel().id());
         System.out.println(ctx.channel().id()+" Out");  
     }
     
